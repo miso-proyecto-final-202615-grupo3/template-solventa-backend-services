@@ -1,0 +1,29 @@
+replicaCount: 2
+
+image:
+  repository: backend-service
+  pullPolicy: IfNotPresent
+  tag: "0.1.0"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+database:
+  existingSecret: backend-service-secrets
+  secretKey: DATABASE_URL
+
+config:
+  PROJECT_NAME: Template Solventa Backend Service
+  VERSION: "0.1.0"
+  ENVIRONMENT: development
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

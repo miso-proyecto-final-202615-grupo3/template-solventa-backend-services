@@ -1,0 +1,1 @@
+"""Greetings domain slice."""

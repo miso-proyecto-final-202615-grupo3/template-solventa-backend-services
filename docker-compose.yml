@@ -1,0 +1,59 @@
+services:
+  api:
+    build: .
+    container_name: template-solventa-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      PROJECT_NAME: ${PROJECT_NAME}
+      ENVIRONMENT: ${ENVIRONMENT}
+      DATABASE_URL: ${DATABASE_URL}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+    depends_on:
+      db:
+        condition: service_healthy
+      lgtm:
+        condition: service_started
+
+  db:
+    image: postgres:16-alpine
+    container_name: template-solventa-db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  lgtm:
+    image: grafana/otel-lgtm:latest
+    container_name: template-solventa-lgtm
+    ports:
+      - "3000:3000"
+      - "4317:4317"
+      - "4318:4318"
+      - "9090:9090"
+      - "3200:3200"
+      - "3100:3100"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - lgtm_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  lgtm_data:
