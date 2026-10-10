@@ -7,9 +7,10 @@ from src.application.use_cases.greetings_use_case import (
     GreetingResponseDTO,
     GreetingUseCases,
 )
+from src.core.config import settings
 from src.presentation.dependencies import get_greeting_use_cases
 
-router = APIRouter(prefix="/greetings", tags=["Greetings"])
+router = APIRouter(prefix=f"{settings.API_PREFIX}/greetings", tags=["Greetings"])
 
 
 @router.post(

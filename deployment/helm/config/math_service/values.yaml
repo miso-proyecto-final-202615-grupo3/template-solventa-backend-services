@@ -14,10 +14,19 @@ service:
 database:
   enabled: false
 
+bucket:
+  enabled: false
+
+cognito:
+  enabled: false
+
+kmsKey:
+  enabled: false
+
 config:
   PROJECT_NAME: Template Solventa Math Service
   VERSION: "0.1.0"
-  ENVIRONMENT: development
+  ENVIRONMENT: dev
   OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317
 
 resources:

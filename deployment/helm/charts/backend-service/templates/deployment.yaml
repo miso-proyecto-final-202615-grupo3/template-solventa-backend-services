@@ -25,13 +25,36 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "backend-service.fullname" . }}
-{{ if .Values.database.enabled }}
+{{ if or .Values.database.enabled .Values.bucket.enabled .Values.cognito.enabled .Values.kmsKey.enabled }}
           env:
+{{ if .Values.database.enabled }}
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.database.existingSecret }}
                   key: {{ .Values.database.secretKey }}
+{{ end }}
+{{ if .Values.bucket.enabled }}
+            - name: S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.bucket.existingSecret }}
+                  key: {{ .Values.bucket.secretKey }}
+{{ end }}
+{{ if .Values.cognito.enabled }}
+            - name: COGNITO_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.cognito.existingSecret }}
+                  key: {{ .Values.cognito.secretKey }}
+{{ end }}
+{{ if .Values.kmsKey.enabled }}
+            - name: KMS_KEY_ARN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.kmsKey.existingSecret }}
+                  key: {{ .Values.kmsKey.secretKey }}
+{{- end }}
 {{ end }}
           readinessProbe:
             httpGet:

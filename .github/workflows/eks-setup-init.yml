@@ -24,11 +24,15 @@ jobs:
     environment: ${{ inputs.target_env }}
     timeout-minutes: 15
     env:
+      DEPLOYMENT_ENV: ${{ inputs.target_env }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       CLUSTER_NAME: solventa-${{ inputs.target_env }}-eks
       K8S_NAMESPACE: solventa-${{ inputs.target_env }}
 
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -44,12 +48,8 @@ jobs:
       - name: Create namespace
         run: kubectl create namespace "$K8S_NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Create backend service secrets
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Apply ingress with Kustomize
         run: |
           set -euo pipefail
-          kubectl create secret generic backend-service-secrets \
-            --namespace "$K8S_NAMESPACE" \
-            --from-literal="DATABASE_URL=$DATABASE_URL" \
-            --dry-run=client -o yaml | kubectl apply -f -
+          overlay="deployment/kuztomize/overlays/$DEPLOYMENT_ENV"
+          kubectl apply -k "$overlay" --namespace "$K8S_NAMESPACE"

@@ -1,2 +1,14 @@
 image:
-  repository: REPLACE_WITH_DEV_GREETING_SERVICE_ECR_REPO_URL
+  repository: 179201404385.dkr.ecr.us-east-1.amazonaws.com/template-solventa-greeting-service
+
+database:
+  existingSecret: solventa-dev-app-secrets
+
+bucket:
+  existingSecret: solventa-dev-app-secrets
+
+cognito:
+  existingSecret: solventa-dev-app-secrets
+
+kmsKey:
+  existingSecret: solventa-dev-app-secrets

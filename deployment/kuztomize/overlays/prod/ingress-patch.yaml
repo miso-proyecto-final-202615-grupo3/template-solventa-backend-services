@@ -1,6 +1,6 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: system-ingress
+  name: solventa-ingress-alb
   annotations:
-    alb.ingress.kubernetes.io/load-balancer-arn: SET_IN_OVERLAY
+    alb.ingress.kubernetes.io/group.name: solventa-prod-alb-group

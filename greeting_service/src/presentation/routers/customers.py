@@ -7,8 +7,9 @@ from src.application.use_cases.customer_use_case import (
     CustomerResponseDTO,
     CustomerUseCases,
 )
+from src.core.config import settings
 
-router = APIRouter(prefix="/customers", tags=["Customers"])
+router = APIRouter(prefix=f"{settings.API_PREFIX}/customers", tags=["Customers"])
 
 
 @router.post(

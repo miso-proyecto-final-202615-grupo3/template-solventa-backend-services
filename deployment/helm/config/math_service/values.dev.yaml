@@ -1,2 +1,2 @@
 image:
-  repository: REPLACE_WITH_DEV_MATH_SERVICE_ECR_REPO_URL
+  repository: 179201404385.dkr.ecr.us-east-1.amazonaws.com/template-solventa-math-service

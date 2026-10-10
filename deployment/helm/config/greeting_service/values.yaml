@@ -13,13 +13,28 @@ service:
 
 database:
   enabled: true
-  existingSecret: backend-service-secrets
+  existingSecret: secret-name
   secretKey: DATABASE_URL
+
+bucket:
+  enabled: true
+  existingSecret: secret-name
+  secretKey: S3_BUCKET_NAME
+
+cognito:
+  enabled: true
+  existingSecret: secret-name
+  secretKey: COGNITO_CLIENT_ID
+
+kmsKey:
+  enabled: true
+  existingSecret: secret-name
+  secretKey: KMS_KEY_ARN
 
 config:
   PROJECT_NAME: Template Solventa Greeting Service
   VERSION: "0.1.0"
-  ENVIRONMENT: development
+  ENVIRONMENT: dev
   OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317
 
 resources:
