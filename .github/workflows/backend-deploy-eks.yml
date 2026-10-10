@@ -64,6 +64,7 @@ jobs:
             --namespace "$K8S_NAMESPACE" \
             --values "deployment/helm/config/$SERVICE_NAME/values.yaml" \
             --values "deployment/helm/config/$SERVICE_NAME/values.$DEPLOYMENT_ENV.yaml" \
+            --set-string image.tag="latest" \
             --set-string config.ENVIRONMENT="$DEPLOYMENT_ENV"
 
       - name: Wait for deployment rollout

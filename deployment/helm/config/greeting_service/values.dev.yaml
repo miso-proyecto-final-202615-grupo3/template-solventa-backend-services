@@ -1,5 +1,5 @@
 image:
-  repository: 179201404385.dkr.ecr.us-east-1.amazonaws.com/template-solventa-greeting-service:latest
+  repository: 179201404385.dkr.ecr.us-east-1.amazonaws.com/template-solventa-greeting-service
 
 database:
   existingSecret: solventa-dev-app-secrets
