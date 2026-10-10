@@ -2,4 +2,13 @@ image:
   repository: REPLACE_WITH_PROD_GREETING_SERVICE_ECR_REPO_URL
 
 database:
-  existingSecret: solventa-dev-app-secrets
+  existingSecret: solventa-prod-app-secrets
+
+bucket:
+  existingSecret: solventa-prod-app-secrets
+
+cognito:
+  existingSecret: solventa-prod-app-secrets
+
+kmsKey:
+  existingSecret: solventa-prod-app-secrets
