@@ -19,6 +19,7 @@ La estructura del proyecto desacopla estrictamente los componentes externos de l
 ```txt
 microservice/
 ├── greeting_service/
+│   ├── requirements.txt
 │   ├── src/
 │   │   ├── presentation/
 │   │   ├── application/
@@ -31,6 +32,7 @@ microservice/
 │       ├── integration/
 │       └── conftest.py
 ├── math_service/
+│   ├── requirements.txt
 │   ├── src/
 │   │   ├── presentation/
 │   │   ├── application/

@@ -9,14 +9,16 @@ FastAPI monorepo with services.
 
 ## Run locally
 
-Install dependencies and run the greeting service:
+Install greeting service dependencies and run it:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r greeting_service/requirements.txt
 uvicorn src.main:app --reload --app-dir greeting_service
 ```
+
+Install math service dependencies separately with `pip install -r math_service/requirements.txt`.
 
 Run both services and their shared dependencies with Compose:
 
@@ -34,8 +36,10 @@ The greeting API is available at `http://localhost:8000`; the math API is at `ht
 ## Source layout
 
 - `greeting_service/src`: greeting API and Clean Architecture layers
+- `greeting_service/requirements.txt`: greeting service dependencies
 - `greeting_service/tests`: greeting service unit and integration tests
 - `math_service/src`: stateless math API and its application layers
+- `math_service/requirements.txt`: math service dependencies
 - `math_service/tests`: math service unit and integration tests
 - `docker/services/Dockerfile.<service_name>`: service-specific images
 - `deployment/helm/config/<service_name>/values.yaml`: per-service Helm settings
