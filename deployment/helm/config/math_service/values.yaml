@@ -1,0 +1,29 @@
+replicaCount: 2
+fullnameOverride: math-service
+
+image:
+  repository: math-service
+  pullPolicy: IfNotPresent
+  tag: "0.1.0"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+database:
+  enabled: false
+
+config:
+  PROJECT_NAME: Template Solventa Math Service
+  VERSION: "0.1.0"
+  ENVIRONMENT: development
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

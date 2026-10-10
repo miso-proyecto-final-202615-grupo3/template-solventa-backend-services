@@ -1,0 +1,52 @@
+name: "EKS - Setup Ingress"
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: Select the environment for ingress setup
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - prod
+        default: dev
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  eks-setup-ingress:
+    name: Setup EKS Ingress for ${{ inputs.target_env }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target_env }}
+    timeout-minutes: 15
+    env:
+      DEPLOYMENT_ENV: ${{ inputs.target_env }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      CLUSTER_NAME: solventa-${{ inputs.target_env }}-eks
+      K8S_NAMESPACE: solventa-${{ inputs.target_env }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure EKS access
+        run: aws eks update-kubeconfig --name "$CLUSTER_NAME" --region "$AWS_REGION"
+
+      - name: Apply ingress with Kustomize
+        run: |
+          set -euo pipefail
+          overlay="deployment/kuztomize/overlays/$DEPLOYMENT_ENV"
+          kubectl apply -k "$overlay" --namespace "$K8S_NAMESPACE"

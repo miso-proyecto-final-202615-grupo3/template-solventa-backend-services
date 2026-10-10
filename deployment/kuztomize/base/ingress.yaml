@@ -1,19 +1,26 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: backend-service
+  name: system-ingress
   annotations:
     kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/load-balancer-arn: "${LOAD_BALANCER_ARN}"
+    alb.ingress.kubernetes.io/load-balancer-arn: SET_IN_OVERLAY
 spec:
   ingressClassName: alb
   rules:
     - http:
         paths:
+          - path: /add
+            pathType: Prefix
+            backend:
+              service:
+                name: math-service
+                port:
+                  number: 80
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: backend-service
+                name: greeting-service
                 port:
                   number: 80

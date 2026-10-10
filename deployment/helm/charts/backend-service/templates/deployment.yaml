@@ -25,12 +25,14 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "backend-service.fullname" . }}
+{{ if .Values.database.enabled }}
           env:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.database.existingSecret }}
                   key: {{ .Values.database.secretKey }}
+{{ end }}
           readinessProbe:
             httpGet:
               path: /health

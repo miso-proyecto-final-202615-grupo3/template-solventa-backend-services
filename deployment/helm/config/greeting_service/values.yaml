@@ -1,7 +1,8 @@
 replicaCount: 2
+fullnameOverride: greeting-service
 
 image:
-  repository: backend-service
+  repository: greeting-service
   pullPolicy: IfNotPresent
   tag: "0.1.0"
 
@@ -11,11 +12,12 @@ service:
   targetPort: 8000
 
 database:
+  enabled: true
   existingSecret: backend-service-secrets
   secretKey: DATABASE_URL
 
 config:
-  PROJECT_NAME: Template Solventa Backend Service
+  PROJECT_NAME: Template Solventa Greeting Service
   VERSION: "0.1.0"
   ENVIRONMENT: development
   OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317

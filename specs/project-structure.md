@@ -18,61 +18,41 @@ La estructura del proyecto desacopla estrictamente los componentes externos de l
 
 ```txt
 microservice/
-├── src/
-│   ├── core/                    # Configuración global, ajustes y telemetría
-│   │   ├── __init__.py
-│   │   ├── config.py            # Pydantic Settings (variables de entorno)
-│   │   ├── telemetry.py         # Configuración de OpenTelemetry y Prometheus
-│   │   └── database.py          # Conexión y sesión de SQLAlchemy async
-│   │
-│   ├── domain/                  # Lógica de negocio pura dividida por Slices
-│   │   ├── __init__.py
-│   │   ├── greetings/           # Slice de Saludos
-│   │   │   ├── entities.py      # Entidades de dominio
-│   │   │   ├── value_objects.py # Objetos de valor (Value Objects)
-│   │   │   ├── repositories.py  # Interfaces de repositorio (puertos)
-│   │   │   └── services.py      # Servicios de dominio
-│   │   └── customers/           # Slice de Clientes (Ejemplo de DDD)
-│   │       ├── entities.py
-│   │       ├── value_objects.py
-│   │       ├── repositories.py
-│   │       └── services.py
-│   │
-│   ├── application/use_cases/   # Casos de uso / Orquestadores de negocio
-│   │   ├── __init__.py
-│   │   ├── greetings_use_case.py
-│   │   └── customer_use_case.py
-│   │
-│   ├── infrastructure/          # Adaptadores externos (BD, clientes HTTP, etc.)
-│   │   ├── __init__.py
-│   │   ├── persistence/         # Modelos SQLAlchemy y Repositorios concretos
-│   │   │   ├── models.py
-│   │   │   └── greeting_repository_impl.py
-│   │   └── gateways/            # Clientes externos o pasarelas
-│   │
-│   ├── presentation/            # Capa de entrada (FastAPI Routes, DTOs de entrada/salida)
-│   │   ├── __init__.py
-│   │   ├── dependencies.py      # Inyección de dependencias (FastAPI Depends)
-│   │   ├── routers/
-│   │       ├── health.py        # Health Check Endpoint
-│   │       └── greetings.py     # Endpoints de saludos
-│   │
-│   └── main.py                  # Punto de entrada de la aplicación FastAPI
+├── greeting_service/
+│   ├── src/
+│   │   ├── presentation/
+│   │   ├── application/
+│   │   ├── domain/
+│   │   ├── infrastructure/
+│   │   ├── core/
+│   │   └── main.py
+│   └── tests/
+│       ├── unit/
+│       ├── integration/
+│       └── conftest.py
+├── math_service/
+│   ├── src/
+│   │   ├── presentation/
+│   │   ├── application/
+│   │   ├── domain/
+│   │   ├── infrastructure/
+│   │   ├── core/
+│   │   └── main.py
+│   └── tests/
+│       ├── unit/
+│       └── integration/
 │
-├── tests/
-│   ├── unit/                    # Pruebas unitarias de dominio y casos de uso
-│   ├── integration/             # Pruebas de integración con bases de datos y APIs
-│   └── conftest.py              # Configuración compartida de Pytest
-│
-├── pyproject.toml               # Dependencias y configuración con Poetry / Hatch
-├── Dockerfile                   # Contenedor optimizado de producción
-├── docker-compose.yml           # Docker Compose para ejecución en local
+├── docker/
+│   ├── services/
+│   │   ├── Dockerfile.greeting_service  # Imagen de Greeting Service
+│   │   └── Dockerfile.math_service      # Imagen de Math Service
+│   └── docker-compose.yml               # Docker Compose para ejecución en local
 └── README.md
 ```
 
 ## 3. Implementación de Componentes Clave
 
-### 3.1. Core (src/core/)
+### 3.1. Core (greeting_service/src/core/)
 
 Configuración (config.py)
 
@@ -129,7 +109,7 @@ def setup_telemetry(app: FastAPI) -> None:
   Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 ```
 
-### 3.2. Domain Layer (src/domain/greetings/)
+### 3.2. Domain Layer (greeting_service/src/domain/greetings/)
 
 Entidad y Objeto de Valor (entities.py y value_objects.py)
 
@@ -178,7 +158,7 @@ class GreetingRepository(ABC):
     pass
 ```
 
-### 3.3. Infrastructure Layer (src/infrastructure/persistence/)
+### 3.3. Infrastructure Layer (greeting_service/src/infrastructure/persistence/)
 
 Modelo SQLAlchemy y Repositorio Concreto (greeting_repository_impl.py)
 
@@ -244,7 +224,7 @@ class SqlAlchemyGreetingRepository(GreetingRepository):
     ]
 ```
 
-### 3.4. Use Cases Layer (src/usecases/greetings_usecases.py)
+### 3.4. Use Cases Layer (greeting_service/src/application/use_cases/greetings_use_case.py)
 
 ```python
 from pydantic import BaseModel
@@ -291,7 +271,7 @@ class GreetingUseCases:
     ]
 ```
 
-### 3.5. Presentation Layer (src/presentation/routers/)
+### 3.5. Presentation Layer (greeting_service/src/presentation/routers/)
 
 Health Check (health.py)
 
@@ -323,7 +303,7 @@ Greetings Router (greetings.py)
 from fastapi import APIRouter, Depends, status
 from typing import List
 from src.presentation.dependencies import get_greeting_use_cases
-from src.usecases.greetings_usecases import (
+from src.application.use_cases.greetings_usecases import (
     CreateGreetingCommand,
     GreetingResponseDTO,
     GreetingUseCases,
@@ -349,7 +329,7 @@ async def list_greetings(
   return await use_cases.get_greetings()
 ```
 
-### 3.6. Main Application (src/main.py)
+### 3.6. Main Application (greeting_service/src/main.py)
 
 ```python
 from fastapi import FastAPI
@@ -381,13 +361,13 @@ async def root():
 
 Las pruebas se ejecutan utilizando Pytest y Pytest-Asyncio, aislando los casos de uso utilizando mocks o repositorios en memoria para garantizar velocidad y fiabilidad.
 
-Ejemplo de Prueba Unitaria para Casos de Uso (tests/unit/test_greetings.py)
+Ejemplo de Prueba Unitaria para Casos de Uso (greeting_service/tests/unit/test_greetings.py)
 
 ```python
 import pytest
 from src.domain.greetings.entities import Greeting
 from src.domain.greetings.repositories import GreetingRepository
-from src.usecases.greetings_usecases import CreateGreetingCommand, GreetingUseCases
+from src.application.use_cases.greetings_usecases import CreateGreetingCommand, GreetingUseCases
 
 
 class InMemoryGreetingRepository(GreetingRepository):
@@ -454,7 +434,7 @@ requires = ["poetry-core>=2.0.0"]
 build-backend = "poetry.core.masonry.api"
 ```
 
-## 6. Pruebas de Integración y API (tests/integration/)
+## 6. Pruebas de Integración y API (greeting_service/tests/integration/)
 
 Las pruebas de integración validan el comportamiento completo del microservicio desde la capa de presentación (endpoints HTTP) hasta la infraestructura, utilizando un cliente HTTP asíncrono (httpx.AsyncClient) y una base de datos real o simulada mediante bases de datos de prueba transaccionales.
 
@@ -507,7 +487,7 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
     yield ac
 ```
 
-Implementación de Pruebas de API (tests/integration/test_greetings_api.py)
+Implementación de Pruebas de API (greeting_service/tests/integration/test_greetings_api.py)
 
 Este archivo verifica que los endpoints HTTP funcionen de extremo a extremo, validando códigos de estado HTTP, serialización de Pydantic v2 y la persistencia real en la base de datos de prueba.
 
