@@ -1,13 +1,13 @@
-replicaCount: 2
+replicaCount: 1
 fullnameOverride: math-service
+
+containerName: backend-service
 serviceAccountName: solventa-app-sa
 
 image:
   repository: math-service
   pullPolicy: IfNotPresent
   tag: "latest"
-
-containerName: backend-service
 
 network:
   portName: http
