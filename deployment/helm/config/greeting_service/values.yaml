@@ -7,7 +7,7 @@ serviceAccountName: solventa-app-sa
 image:
   repository: greeting-service
   pullPolicy: IfNotPresent
-  tag: "0.1.0"
+  tag: "latest"
 
 network:
   portName: http

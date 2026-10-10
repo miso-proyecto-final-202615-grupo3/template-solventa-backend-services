@@ -5,7 +5,7 @@ serviceAccountName: solventa-app-sa
 image:
   repository: math-service
   pullPolicy: IfNotPresent
-  tag: "0.1.0"
+  tag: "latest"
 
 containerName: backend-service
 
