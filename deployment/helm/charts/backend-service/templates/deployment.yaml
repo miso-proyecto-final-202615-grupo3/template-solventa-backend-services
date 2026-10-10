@@ -14,14 +14,15 @@ spec:
       labels:
         {{- include "backend-service.selectorLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
       containers:
-        - name: backend-service
+        - name: {{ .Values.containerName }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 8000
-              protocol: TCP
+            - name: {{ .Values.network.portName }}
+              containerPort: {{ .Values.network.containerPort }}
+              protocol: {{ .Values.network.protocol }}
           envFrom:
             - configMapRef:
                 name: {{ include "backend-service.fullname" . }}
@@ -58,15 +59,15 @@ spec:
 {{ end }}
           readinessProbe:
             httpGet:
-              path: /health
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 10
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.probes.readiness.port }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
           livenessProbe:
             httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 20
-            periodSeconds: 20
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.probes.liveness.port }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

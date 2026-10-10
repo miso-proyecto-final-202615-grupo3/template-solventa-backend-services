@@ -1,10 +1,30 @@
 replicaCount: 2
 fullnameOverride: math-service
+serviceAccountName: solventa-app-sa
 
 image:
   repository: math-service
   pullPolicy: IfNotPresent
   tag: "0.1.0"
+
+containerName: backend-service
+
+network:
+  portName: http
+  containerPort: 8000
+  protocol: TCP
+
+probes:
+  readiness:
+    path: /health
+    port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  liveness:
+    path: /
+    port: http
+    initialDelaySeconds: 20
+    periodSeconds: 20
 
 service:
   type: ClusterIP
