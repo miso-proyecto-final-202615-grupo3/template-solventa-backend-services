@@ -48,7 +48,7 @@ jobs:
       - name: Create namespace
         run: kubectl create namespace "$K8S_NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Apply ingress with Kustomize
+      - name: Create shared resources with Kustomize
         run: |
           set -euo pipefail
           overlay="deployment/kuztomize/overlays/$DEPLOYMENT_ENV"
