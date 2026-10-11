@@ -6,9 +6,8 @@ metadata:
     # Specifies the use of the AWS Load Balancer Controller
     kubernetes.io/ingress.class: alb
 
-    # 1. Group Name: Must be identical across all Ingresses sharing this ALB
-    # REQUIRED: Must match the group name assigned to the existing ALB
-    alb.ingress.kubernetes.io/group.name: SET_IN_OVERLAY
+    # 1. ALB ARN
+    alb.ingress.kubernetes.io/load-balancer-arn: SET_IN_OVERLAY
 
     # 2. Scheme & Target Type
     # Defines the routing mode: 'ip' (directly to pods) or 'instance' (to NodePort)

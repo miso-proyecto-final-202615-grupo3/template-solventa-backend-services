@@ -54,5 +54,5 @@ jobs:
 
           kubectl delete ingress solventa-ingress-alb --namespace "$K8S_NAMESPACE"
 
-          overlay="deployment/kuztomize/overlays/$DEPLOYMENT_ENV"
-          kubectl apply -k "$overlay" --namespace "$K8S_NAMESPACE"
+          # overlay="deployment/kuztomize/overlays/$DEPLOYMENT_ENV"
+          # kubectl apply -k "$overlay" --namespace "$K8S_NAMESPACE"

@@ -3,4 +3,4 @@ kind: Ingress
 metadata:
   name: solventa-ingress-alb
   annotations:
-    alb.ingress.kubernetes.io/group.name: solventa-qa-alb-group
+    alb.ingress.kubernetes.io/load-balancer-arn: REPLACE
