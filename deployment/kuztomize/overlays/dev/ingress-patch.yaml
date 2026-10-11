@@ -2,5 +2,3 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: solventa-ingress-alb
-  annotations:
-    alb.ingress.kubernetes.io/load-balancer-arn: arn:aws:elasticloadbalancing:us-east-1:179201404385:loadbalancer/app/solventa-dev-alb/5d4bfebbb2229749

@@ -6,8 +6,8 @@ metadata:
     # Specifies the use of the AWS Load Balancer Controller
     kubernetes.io/ingress.class: alb
 
-    # 1. ALB ARN
-    alb.ingress.kubernetes.io/load-balancer-arn: SET_IN_OVERLAY
+    # 1. ALB ARN and Group Name
+    alb.ingress.kubernetes.io/group.name: solventa-shared-alb-group
 
     # 2. Scheme & Target Type
     # Defines the routing mode: 'ip' (directly to pods) or 'instance' (to NodePort)
