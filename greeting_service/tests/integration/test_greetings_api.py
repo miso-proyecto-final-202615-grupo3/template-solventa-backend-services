@@ -1,6 +1,16 @@
 import pytest
 from httpx import AsyncClient
 
+from src.presentation.routers import health
+
+
+class FailingConnection:
+    async def __aenter__(self):
+        raise RuntimeError("database unavailable")
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        return False
+
 
 @pytest.mark.asyncio
 async def test_health_check(async_client: AsyncClient):
@@ -9,6 +19,18 @@ async def test_health_check(async_client: AsyncClient):
     data = response.json()
     assert data["status"] == "healthy"
     assert "version" in data
+
+
+@pytest.mark.asyncio
+async def test_health_check_returns_503_when_database_check_fails(
+    async_client: AsyncClient, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(health.engine, "connect", lambda: FailingConnection())
+
+    response = await async_client.get("/health")
+
+    assert response.status_code == 503
+    assert response.json()["status"] == "unhealthy"
 
 
 @pytest.mark.asyncio
