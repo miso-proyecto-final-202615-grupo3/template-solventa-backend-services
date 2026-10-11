@@ -55,4 +55,4 @@ jobs:
       #     kubectl apply -k "$overlay" --namespace "$K8S_NAMESPACE"
 
       - name: Show secrets-store-csi-provider logs
-        run: kubectl logs -n aws-secrets-manager -l pp.kubernetes.io/name=aws-secrets-store-csi-driver-provider --tail=100
+        run: kubectl logs -n aws-secrets-manager -l app.kubernetes.io/name=aws-secrets-store-csi-driver-provider --tail=100
