@@ -55,7 +55,7 @@ PYTHONPATH=math_service python -m pytest math_service/tests
 
 All workflows are started manually from **Actions** with `workflow_dispatch`:
 
-- `eks-setup-init.yml`: creates the environment's Kubernetes namespace and the `backend-service-secrets` secret containing `DATABASE_URL`. Input: `target_env`.
+- `eks-setup-init.yml`: creates the environment's Kubernetes namespace and applies its Kustomize resources, including an ExternalSecret that syncs the environment's Secrets Manager secret into Kubernetes. Input: `target_env`.
 - `eks-setup-ingress.yml`: applies the selected environment's Kustomize ingress overlay. Input: `target_env`.
 - `backend-publish-ecr.yml`: builds and pushes images for both `greeting_service` and `math_service` to their ECR repositories. Input: `target_env`.
 - `service-publish-ecr.yml`: builds and pushes one service image to its ECR repository. Inputs: `target_env`, `service_name`.
@@ -79,3 +79,5 @@ Add these secrets separately to each GitHub Environment (`dev`, `qa`, and `prod`
 - `AWS_REGION`: AWS region containing the environment's EKS cluster and ECR repositories.
 - `AWS_ROLE_ARN`: IAM role ARN assumed by GitHub Actions using OIDC.
 - `DATABASE_URL`: greeting service database connection string; `eks-setup-init.yml` writes it to Kubernetes.
+
+The External Secrets Operator must be installed in each cluster. Its controller must have AWS Pod Identity credentials and permission to read the environment's `solventa-backend/app-secrets` secret in Secrets Manager.

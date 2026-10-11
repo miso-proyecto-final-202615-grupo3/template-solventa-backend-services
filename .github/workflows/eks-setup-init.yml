@@ -53,6 +53,3 @@ jobs:
           set -euo pipefail
           overlay="deployment/kuztomize/overlays/$DEPLOYMENT_ENV"
           kubectl apply -k "$overlay" --namespace "$K8S_NAMESPACE"
-
-      # - name: Show secrets-store-csi-provider logs
-      #   run: kubectl logs -n aws-secrets-manager -l app.kubernetes.io/name=aws-secrets-store-csi-driver-provider --tail=100

@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../base
+  - external-secret.yaml
 patches:
   - path: ingress-patch.yaml
     target:
@@ -9,9 +10,3 @@ patches:
       version: v1
       kind: Ingress
       name: solventa-ingress-alb
-  - path: aws-secrets-provider-patch.yaml
-    target:
-      group: secrets-store.csi.x-k8s.io
-      version: v1
-      kind: SecretProviderClass
-      name: aws-secrets-provider
