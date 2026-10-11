@@ -43,12 +43,11 @@ microservice/
 │   └── tests/
 │       ├── unit/
 │       └── integration/
-│
 ├── docker/
 │   ├── services/
 │   │   ├── Dockerfile.greeting_service  # Imagen de Greeting Service
 │   │   └── Dockerfile.math_service      # Imagen de Math Service
-│   └── docker-compose.yml               # Docker Compose para ejecución en local
+├── docker-compose.yml                   # Docker Compose para ejecución en local
 └── README.md
 ```
 

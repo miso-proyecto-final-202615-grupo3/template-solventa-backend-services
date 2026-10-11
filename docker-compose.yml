@@ -1,13 +1,13 @@
 services:
   greeting_service:
     build:
-      context: ../greeting_service
+      context: ./greeting_service
       dockerfile: ../docker/services/Dockerfile.greeting_service
     container_name: template-solventa-greeting-service
     ports:
       - "8000:8000"
     env_file:
-      - ../.env
+      - .env
     environment:
       PROJECT_NAME: ${PROJECT_NAME}
       ENVIRONMENT: ${ENVIRONMENT}
@@ -21,13 +21,13 @@ services:
 
   math_service:
     build:
-      context: ../math_service
+      context: ./math_service
       dockerfile: ../docker/services/Dockerfile.math_service
     container_name: template-solventa-math-service
     ports:
       - "8001:8000"
     env_file:
-      - ../.env
+      - .env
     environment:
       PROJECT_NAME: Template Solventa Math Service
       ENVIRONMENT: ${ENVIRONMENT}
@@ -40,7 +40,7 @@ services:
     image: postgres:16-alpine
     container_name: template-solventa-db
     env_file:
-      - ../.env
+      - .env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}

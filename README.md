@@ -23,7 +23,7 @@ Install math service dependencies separately with `pip install -r math_service/r
 Run both services and their shared dependencies with Compose:
 
 ```bash
-docker compose -f docker/docker-compose.yml up --build
+docker compose up --build
 ```
 
 The greeting API is available at `http://localhost:8000`; the math API is at `http://localhost:8001`.
@@ -41,6 +41,7 @@ The greeting API is available at `http://localhost:8000`; the math API is at `ht
 - `math_service/src`: stateless math API and its application layers
 - `math_service/requirements.txt`: math service dependencies
 - `math_service/tests`: math service unit and integration tests
+- `docker-compose.yml`: local Docker Compose configuration
 - `docker/services/Dockerfile.<service_name>`: service-specific images
 - `deployment/helm/config/<service_name>/values.yaml`: per-service Helm settings
 
