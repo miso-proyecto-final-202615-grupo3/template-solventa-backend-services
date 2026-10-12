@@ -17,9 +17,11 @@ on:
         required: true
         type: choice
         options:
+          - create_namespace
           - create_shared_resources
           - delete_ingress
           - delete_external_secret
+          - set_prefix_delegation_on_nodes
         default: create_shared_resources
 
 permissions:
@@ -58,6 +60,10 @@ jobs:
       - name: Configure EKS access
         run: aws eks update-kubeconfig --name "$CLUSTER_NAME" --region "$AWS_REGION"
 
+      - name: Create namespace
+        if: ${{ inputs.action == 'create_namespace' }}
+        run: kubectl create namespace "$K8S_NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Create shared resources with Kustomize
         if: ${{ inputs.action == 'create_shared_resources' }}
         run: kubectl apply -k "deployment/kuztomize/overlays/$DEPLOYMENT_ENV" --namespace "$K8S_NAMESPACE"
@@ -69,3 +75,7 @@ jobs:
       - name: Delete ExternalSecret
         if: ${{ inputs.action == 'delete_external_secret' }}
         run: kubectl delete externalsecret "solventa-$DEPLOYMENT_ENV-app-externalsecret" --namespace "$K8S_NAMESPACE"
+
+      - name: Set ENABLE_PREFIX_DELEGATION on cluster nodes
+        if: ${{ inputs.action == 'set_prefix_delegation_on_nodes' }}
+        run: kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true
