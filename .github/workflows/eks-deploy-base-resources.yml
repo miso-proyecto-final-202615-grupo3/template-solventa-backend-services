@@ -1,4 +1,4 @@
-name: "EKS - Deploy Base Resources"
+name: "EKS Cluster - Deploy Base Resources"
 
 on:
   workflow_dispatch:
