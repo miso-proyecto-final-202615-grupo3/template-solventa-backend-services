@@ -1,4 +1,4 @@
-name: "EKS - Setup Init"
+name: "EKS - Deploy Base Resources"
 
 on:
   workflow_dispatch:
@@ -12,18 +12,27 @@ on:
           - qa
           - prod
         default: dev
+      action:
+        description: "Select the resource action"
+        required: true
+        type: choice
+        options:
+          - create_shared_resources
+          - delete_ingress
+          - delete_external_secret
+        default: create_shared_resources
 
 permissions:
   contents: read
   id-token: write
 
 concurrency:
-  group: eks-setup-init-${{ inputs.target_env }}
+  group: eks-deploy-base-resources-${{ inputs.target_env }}
   cancel-in-progress: false
 
 jobs:
-  eks-setup-init:
-    name: Setup EKS for ${{ inputs.target_env }}
+  eks-deploy-base-resources:
+    name: Deploy base resources in EKS for ${{ inputs.target_env }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.target_env }}
     timeout-minutes: 15
@@ -49,14 +58,14 @@ jobs:
       - name: Configure EKS access
         run: aws eks update-kubeconfig --name "$CLUSTER_NAME" --region "$AWS_REGION"
 
-      - name: Create namespace
-        run: kubectl create namespace "$K8S_NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
-
       - name: Create shared resources with Kustomize
-        run: |
-          set -euo pipefail
+        if: ${{ inputs.action == 'create_shared_resources' }}
+        run: kubectl apply -k "deployment/kuztomize/overlays/$DEPLOYMENT_ENV" --namespace "$K8S_NAMESPACE"
 
-          kubectl delete ingress solventa-ingress-alb --namespace "$K8S_NAMESPACE"
+      - name: Delete ingress
+        if: ${{ inputs.action == 'delete_ingress' }}
+        run: kubectl delete ingress solventa-ingress-alb --namespace "$K8S_NAMESPACE"
 
-          overlay="deployment/kuztomize/overlays/$DEPLOYMENT_ENV"
-          kubectl apply -k "$overlay" --namespace "$K8S_NAMESPACE"
+      - name: Delete ExternalSecret
+        if: ${{ inputs.action == 'delete_external_secret' }}
+        run: kubectl delete externalsecret "solventa-$DEPLOYMENT_ENV-app-externalsecret" --namespace "$K8S_NAMESPACE"
